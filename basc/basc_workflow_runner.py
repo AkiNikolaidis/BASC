@@ -45,8 +45,8 @@ def run_basc_workflow(subject_file_list, roi_mask_file, dataset_bootstraps, time
     import nipype.interfaces.io as nio
     import nipype.pipeline.engine as pe
     import pandas as pd
-    
-    from basc import create_basc
+
+    from basc.basc import create_basc
 
     workflow = pe.Workflow(name='basc_workflow_runner')
 
@@ -57,7 +57,7 @@ def run_basc_workflow(subject_file_list, roi_mask_file, dataset_bootstraps, time
     workflow.base_dir = workflow_dir
 
     resource_pool = {}
-    
+
     basc = create_basc(proc_mem, name='basc')
     basc.inputs.inputspec.subject_file_list=subject_file_list
     basc.inputs.inputspec.roi_mask_file=roi_mask_file
@@ -72,8 +72,8 @@ def run_basc_workflow(subject_file_list, roi_mask_file, dataset_bootstraps, time
     basc.inputs.inputspec.roi2_mask_file=roi2_mask_file
     basc.inputs.inputspec.blocklength=blocklength
     basc.inputs.inputspec.affinity_threshold=affinity_threshold
-    
-    
+
+
     # shitty Steve pseudo-code that is shitty
 #    thing = basc.outputs.outputspec.individual_cluster_voxel_scores_imgs
 #    print(thing)
@@ -99,7 +99,7 @@ def run_basc_workflow(subject_file_list, roi_mask_file, dataset_bootstraps, time
 
     ds = pe.Node(nio.DataSink(), name='datasink_workflow_name')
     ds.inputs.base_directory = workflow_dir
-    
+
     for output in resource_pool.keys():
         node, out_file = resource_pool[output]
         workflow.connect(node, out_file, ds, output)
